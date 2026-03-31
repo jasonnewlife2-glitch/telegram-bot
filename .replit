@@ -1,0 +1,38 @@
+modules = ["python-3.11"]
+
+[nix]
+channel = "stable-25_05"
+packages = ["freetype", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "tcl", "tk", "zlib"]
+
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Run Bot"
+
+[[workflows.workflow]]
+name = "Run Bot"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python3 main.py"
+
+[userenv]
+
+[userenv.shared]
+BOT_TOKEN = "7589674469:AAFfkQr6-ina0r_tC1P7o4hpElqQgc5dxeY"
+ADMIN_ID = "7610327693"
+
+[[ports]]
+localPort = 8080
+externalPort = 80

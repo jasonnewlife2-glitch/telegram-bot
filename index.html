@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Millionaire Bot - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎰 Dream Millionaire Bot</h1>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+        
+        <div class="games-grid">
+            <div class="game-card" onclick="selectGame('mines')">
+                <h2>⭐ Mines</h2>
+                <p>Get safe position signals</p>
+            </div>
+            
+            <div class="game-card" onclick="selectGame('mines2')">
+                <h2>💎 Mines 2</h2>
+                <p>Advanced mine signals</p>
+            </div>
+            
+            <div class="game-card" onclick="selectGame('aviator')">
+                <h2>✈️ Aviator</h2>
+                <p>Flight multiplier predictions</p>
+            </div>
+            
+            <div class="game-card" onclick="selectGame('luckyjet')">
+                <h2>🚀 Lucky Jet</h2>
+                <p>Rocket multiplier signals</p>
+            </div>
+            
+            <div class="game-card" onclick="selectGame('crash')">
+                <h2>🛩️ Crash</h2>
+                <p>Crash game predictions</p>
+            </div>
+            
+            <div class="game-card" onclick="selectGame('penalty')">
+                <h2>⚽ Penalty</h2>
+                <p>Penalty kick signals</p>
+            </div>
+        </div>
+        
+        <div id="game-panel" class="game-panel hidden">
+            <h2 id="game-title"></h2>
+            
+            <div id="mines-selector" class="mines-selector hidden">
+                <p>Select number of mines:</p>
+                <div class="mines-buttons">
+                    <button onclick="setMines(1)">1</button>
+                    <button onclick="setMines(3)">3</button>
+                    <button onclick="setMines(5)">5</button>
+                    <button onclick="setMines(7)">7</button>
+                </div>
+            </div>
+            
+            <div id="mines2-selector" class="mines-selector hidden">
+                <p>Select number of mines:</p>
+                <div class="mines-buttons">
+                    <button onclick="setMines2(2)">2</button>
+                    <button onclick="setMines2(3)">3</button>
+                    <button onclick="setMines2(5)">5</button>
+                    <button onclick="setMines2(7)">7</button>
+                </div>
+            </div>
+            
+            <button id="get-signal-btn" class="signal-btn" onclick="getSignal()">Get Signal</button>
+            
+            <div id="signal-output" class="signal-output hidden"></div>
+            
+            <button class="back-btn" onclick="backToGames()">🔙 Back to Games</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentGame = '';
+        let selectedMines = null;
+        
+        function selectGame(game) {
+            currentGame = game;
+            selectedMines = null;
+            
+            document.querySelector('.games-grid').classList.add('hidden');
+            document.getElementById('game-panel').classList.remove('hidden');
+            document.getElementById('signal-output').classList.add('hidden');
+            
+            const titles = {
+                'mines': '⭐ Mines',
+                'mines2': '💎 Mines 2',
+                'aviator': '✈️ Aviator',
+                'luckyjet': '🚀 Lucky Jet',
+                'crash': '🛩️ Crash',
+                'penalty': '⚽ Penalty'
+            };
+            
+            document.getElementById('game-title').textContent = titles[game];
+            
+            document.getElementById('mines-selector').classList.add('hidden');
+            document.getElementById('mines2-selector').classList.add('hidden');
+            
+            if (game === 'mines') {
+                document.getElementById('mines-selector').classList.remove('hidden');
+                selectedMines = 1;
+            } else if (game === 'mines2') {
+                document.getElementById('mines2-selector').classList.remove('hidden');
+                selectedMines = 2;
+            }
+        }
+        
+        function setMines(count) {
+            selectedMines = count;
+            document.querySelectorAll('#mines-selector button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function setMines2(count) {
+            selectedMines = count;
+            document.querySelectorAll('#mines2-selector button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function getSignal() {
+            let url = '';
+            
+            if (currentGame === 'mines' && selectedMines) {
+                url = `/api/signal/mines/${selectedMines}`;
+            } else if (currentGame === 'mines2' && selectedMines) {
+                url = `/api/signal/mines2/${selectedMines}`;
+            } else if (currentGame === 'aviator' || currentGame === 'luckyjet' || currentGame === 'crash' || currentGame === 'penalty') {
+                url = `/api/signal/${currentGame}`;
+            }
+            
+            if (!url) return;
+            
+            fetch(url)
+                .then(response => {
+                    if (response.headers.get('content-type').includes('image')) {
+                        return response.blob().then(blob => ({type: 'image', data: URL.createObjectURL(blob)}));
+                    }
+                    return response.json().then(data => ({type: 'text', data: data.signal}));
+                })
+                .then(result => {
+                    const output = document.getElementById('signal-output');
+                    output.classList.remove('hidden');
+                    
+                    if (result.type === 'image') {
+                        output.innerHTML = `<img src="${result.data}" alt="Signal" style="max-width: 100%; border-radius: 10px;">`;
+                    } else {
+                        output.innerHTML = `<pre>${result.data}</pre>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to get signal. Please try again.');
+                });
+        }
+        
+        function backToGames() {
+            document.querySelector('.games-grid').classList.remove('hidden');
+            document.getElementById('game-panel').classList.add('hidden');
+            currentGame = '';
+            selectedMines = null;
+        }
+    </script>
+</body>
+</html>

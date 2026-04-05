@@ -339,7 +339,7 @@ def get_instructions_menu(lang='en'):
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [InlineKeyboardButton(text="Регистрация 🕹️", url="https://1wssrq.life/?open=register&p=lx6n&sub1=8052181437&p=0kik")],
-                [InlineKeyboardButton(text="📩 ПОЛУЧИТЬ КЛЮЧ 📩", url="https://t.me/Jimmy_716?text=Привет!%20Можете%20выслать%20мне%20ключ%20активации")],
+                [InlineKeyboardButton(text="📩 ПОЛУЧИТЬ КЛЮЧ 📩", url="https://t.me/Jimmy_716?text=Здравствуйте!%20Как%20я%20могу%20получить%20код%20активации%3F")],
                 [InlineKeyboardButton(text="Главная 📱", callback_data="back_to_main")]
             ]
         )
@@ -347,7 +347,7 @@ def get_instructions_menu(lang='en'):
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [InlineKeyboardButton(text="Register 🕹️", url="https://1wgfor.com/?open=register&p=lx6n&sub1=8052181437&p=0kik")],
-                [InlineKeyboardButton(text="📩 GET THE KEY 📩", url="https://t.me/Jimmy_716?text=Hi!%20Can%20you%20please%20send%20me%20activation%20key")],
+                [InlineKeyboardButton(text="📩 GET THE KEY 📩", url="https://t.me/Jimmy_716?text=Hi,%20how%20can%20I%20get%20an%20activation%20key?")],
                 [InlineKeyboardButton(text="Main 📱", callback_data="back_to_main")]
             ]
         )
